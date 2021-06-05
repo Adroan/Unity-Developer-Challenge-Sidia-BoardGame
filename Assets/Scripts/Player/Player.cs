@@ -7,6 +7,7 @@ public class Player : MonoBehaviour
 {
     public Board currentBoard;
     public Vector2 currentBoardPosition;
+    public GameObject currentTile;
     private int moves = int.MaxValue;
     public int remainingMoves;
     private bool isMoving;
@@ -19,6 +20,7 @@ public class Player : MonoBehaviour
     {
         currentBoard = GameObject.Find("Board") != null ? GameObject.Find("Board").GetComponent<Board>() : throw new System.Exception("Board not found");
         remainingMoves = moves;
+        currentTile = currentBoard.GetObjectOnMatrix(currentBoardPosition);
     }
     private void Update()
     {
@@ -29,8 +31,7 @@ public class Player : MonoBehaviour
 
             if(Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit))
             {
-                Debug.Log("Acertou algo = " + hit.transform.gameObject.tag);
-                if(hit.transform.gameObject.tag == "Board" &&  IsValidMove(hit.transform.gameObject) && remainingMoves > 0)
+                if(hit.transform.gameObject.tag == "Board" &&  currentBoard.IsValidMove(hit.transform.gameObject,currentBoardPosition) && remainingMoves > 0)
                 {
                     
                     StartCoroutine(Move(hit.transform.gameObject));
@@ -39,18 +40,7 @@ public class Player : MonoBehaviour
         }
     }
 
-    private bool IsValidMove(GameObject _tile)
-    {
-        Vector2 tilePosMatrix = currentBoard.GetTilePositionOnMatrix(_tile);
-        if (tilePosMatrix != currentBoardPosition && (tilePosMatrix.x - currentBoardPosition.x) <= 1 && (tilePosMatrix.x - currentBoardPosition.x) >= - 1 && (tilePosMatrix.y - currentBoardPosition.y) <= 1 && (tilePosMatrix.y - currentBoardPosition.y) >= -1)
-        {
-            Debug.Log("Movimento valido");
-            return true;
-        }
-        Debug.Log("Movimento invalido");
-        return false;
-        
-    }
+
 
     IEnumerator Move(GameObject _tile) {
         if (isMoving)
@@ -62,19 +52,21 @@ public class Player : MonoBehaviour
         Vector3 nextPos = _tile.transform.position;
 
         while (MoveToNextNode(nextPos)) { yield return null; }
+        currentBoard.changeTile(currentTile, _tile);
         currentBoardPosition = currentBoard.GetTilePositionOnMatrix(_tile);
+        currentTile = _tile;
         remainingMoves--;
         isMoving = false;
     }
 
     private bool MoveToNextNode(Vector3 toPos)
     {
-        Debug.Log("Movendo para:" + toPos.ToString());
         return toPos != (transform.position = Vector3.MoveTowards(transform.position, toPos, 2f * Time.deltaTime));
     }
 
     public void SetCurrentPosition(Vector2 _pos)
     {
         currentBoardPosition = _pos;
+        
     }
 }

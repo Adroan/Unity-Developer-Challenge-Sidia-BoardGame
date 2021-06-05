@@ -207,14 +207,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 138366438}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 26d7ce9b7722ad44181d0511975760b6, type: 3}
+  m_Script: {fileID: 11500000, guid: 80c4b6009f339d841801afe0eec05ff4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tilePrefab: {fileID: 8952758657361376270, guid: 90a29504ff82d9942b3472ee6ea5c281,
+  tilePrefab: {fileID: 779246858784472306, guid: b4505ae11be6f0d42868ec379b6181ad,
     type: 3}
   materials:
   - {fileID: 2100000, guid: 0d7b3fe711ffbf94487fc5d07d8ef7a9, type: 2}
   - {fileID: 2100000, guid: 3adb3c7df77c90c46a105eb910b97a59, type: 2}
+  - {fileID: 2100000, guid: e708eb6be3d756f49b3639e7f4762503, type: 2}
   mapWigth: 16
   mapHeight: 16
 --- !u!1 &574899490

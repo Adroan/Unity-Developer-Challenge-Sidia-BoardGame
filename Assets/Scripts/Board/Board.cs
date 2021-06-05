@@ -52,12 +52,14 @@ public abstract class Board : MonoBehaviour
             }
         }
 
-        verifyBoard();
+
 
     }
 
 
     protected abstract void RepositionObjects(int x, int z, GameObject _tile);
+
+    public abstract bool IsValidMove(GameObject _tile, Vector2 _currentPosition);
 
 
     public Dictionary<GameObject, Vector2> GetBoardMatrix()
@@ -91,11 +93,11 @@ public abstract class Board : MonoBehaviour
         return null;
     }
 
-    private void verifyBoard()
+    public void changeTile(GameObject _previusTile, GameObject _nextTile)
     {
-        foreach (KeyValuePair<GameObject, Vector2> pair in board_Dt)
-        {
-            Debug.Log(pair.ToString());
-        }
+        _nextTile.GetComponent<Tile>().occupation = _previusTile.GetComponent<Tile>().occupation;
+        _previusTile.GetComponent<Tile>().occupation = null;
     }
+
+
 }

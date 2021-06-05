@@ -4,7 +4,23 @@ using UnityEngine;
 
 public class SquareBoardGenerator : Board
 {
+    public override bool IsValidMove(GameObject _tile, Vector2 _currentPosition)
+    {
+        Vector2 tilePosMatrix = GetTilePositionOnMatrix(_tile);
+        Debug.Log("CurrentPos = " + _currentPosition.ToString() + " NextPos = " + tilePosMatrix.ToString());
+        if (tilePosMatrix != _currentPosition
+            && (tilePosMatrix.x - _currentPosition.x) <= 1
+            && (tilePosMatrix.x - _currentPosition.x) >= -1
+            && (tilePosMatrix.y - _currentPosition.y) <= 1
+            && (tilePosMatrix.y - _currentPosition.y) >= -1
+            && (!_tile.GetComponent<Tile>().isFull()))
+        {
 
+            return true;
+        }
+
+        return false;
+    }
 
     protected override void RepositionObjects(int x, int z, GameObject _tile)
     {
