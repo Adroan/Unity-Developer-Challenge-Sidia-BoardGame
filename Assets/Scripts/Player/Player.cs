@@ -8,7 +8,7 @@ public class Player : MonoBehaviour
     public Board currentBoard;
     public Vector2 currentBoardPosition;
     public GameObject currentTile;
-    private int moves = int.MaxValue;
+    private int moves = 3;
     public int remainingMoves;
     private bool isMoving;
 
@@ -68,5 +68,10 @@ public class Player : MonoBehaviour
     {
         currentBoardPosition = _pos;
         
+    }
+
+    public void ResetMoves()
+    {
+        remainingMoves = moves;
     }
 }
