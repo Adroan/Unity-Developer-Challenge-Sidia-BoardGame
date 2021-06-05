@@ -8,6 +8,8 @@ public class SquareBoardGenerator : Board
 
     protected override void RepositionObjects(int x, int z, GameObject _tile)
     {
+        xOffset = 1f;
+        zOffset = 1f;
         _tile.transform.position = new Vector3(x * xOffset, 0, z * zOffset);
         if ((x + z) % 2 == 0)
         {

@@ -6,14 +6,12 @@ using UnityEngine;
 public class HexagonBoardGenerator : Board
 {
 
-    private void Awake()
-    {
-        xOffset = 1f;
-        zOffset = 0.866f;
-    }
+   
 
     protected override void RepositionObjects(int x, int z, GameObject _tile)
     {
+        xOffset = 1f;
+        zOffset = 0.866f;
         if (z % 2 == 0)
         {
             _tile.transform.position = new Vector3(x * xOffset, 0, z * zOffset);
