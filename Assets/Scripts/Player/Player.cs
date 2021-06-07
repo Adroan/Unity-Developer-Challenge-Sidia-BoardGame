@@ -31,22 +31,29 @@ public class Player : MonoBehaviour, ISubject
     }
     private void Update()
     {
-        if (state.Equals(State.PlayerTurn))
+        if (character.health > 0)
         {
-            StartCoroutine(StartHighLight());
-            
-            if (Input.GetMouseButtonDown(0))
+            if (state.Equals(State.PlayerTurn))
             {
-                RaycastHit hit = new RaycastHit();
-                if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit))
+                StartCoroutine(StartHighLight());
+
+                if (Input.GetMouseButtonDown(0))
                 {
+                    RaycastHit hit = new RaycastHit();
+                    if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit))
+                    {
                         if (hit.transform.gameObject.tag == "Board" && currentBoard.IsValidMove(hit.transform.gameObject, currentBoardPosition))
-                        {                 
+                        {
                             StartCoroutine(Move(hit.transform.gameObject));
                         }
-                }
+                    }
 
+                }
             }
+        }
+        else
+        {
+            Notify(Message.Dead);
         }
     }
 
@@ -76,14 +83,16 @@ public class Player : MonoBehaviour, ISubject
         Vector3 nextPos = _tile.transform.position;
 
         while (MoveToNextNode(nextPos)) { yield return null; }
-        currentBoard.changeTile(currentTile, _tile.transform.parent.gameObject.name.Contains("hexagon") ? _tile.transform.parent.gameObject : _tile, gameObject);
-        currentBoardPosition = currentBoard.GetTilePositionOnMatrix(_tile.transform.parent.gameObject.name.Contains("hexagon") ? _tile.transform.parent.gameObject : _tile);
-        currentTile = _tile.transform.parent.gameObject.name.Contains("hexagon") ? _tile.transform.parent.gameObject : _tile;
+        currentBoard.changeTile(currentTile, _tile.transform.parent.gameObject.name.Contains("hexagon")|| _tile.transform.parent.gameObject.name.Contains("square") ?_tile.transform.parent.gameObject : _tile, gameObject);
+        currentBoardPosition = currentBoard.GetTilePositionOnMatrix(_tile.transform.parent.gameObject.name.Contains("hexagon") || _tile.transform.parent.gameObject.name.Contains("square") ? _tile.transform.parent.gameObject : _tile);
+        currentTile = _tile.transform.parent.gameObject.name.Contains("hexagon") || _tile.transform.parent.gameObject.name.Contains("square") ? _tile.transform.parent.gameObject : _tile;
         character.useMove();
+        Notify(Message.Move);
         StartCoroutine(EndHighLight());
         if (currentBoard.VerifyBattle(currentBoardPosition))
         {
-            Notify(Message.StartBatle);
+            
+            Notify(Message.StartBattle);
         }
         if (character.moves == 0)
         {

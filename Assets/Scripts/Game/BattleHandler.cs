@@ -9,6 +9,7 @@ public class BattleHandler : MonoBehaviour, IObserver
     private List<GameObject> activePlayers;
 
     public PlayerController playerController;
+    public BattleController battleController;
 
     private Board currentBoard;
     private Player currentPlayerTurn;
@@ -18,14 +19,14 @@ public class BattleHandler : MonoBehaviour, IObserver
     {
         currentBoard = GameObject.Find("Board") != null ? GameObject.Find("Board").GetComponent<Board>() : throw new System.Exception("Board not found");
         activePlayers = new List<GameObject>();
-        InitPlayers();
-        activePlayers[0].GetComponent<Player>().ChangePlayerState(0);
-        playerController.TurnControll(activePlayers);
+         InitPlayers();
+
     }
 
 
     private void InitPlayers()
     {
+
         Vector2[] _positionsBoard = GenerateSpawnposition(playersPrefab.Length);
 
 
@@ -38,6 +39,7 @@ public class BattleHandler : MonoBehaviour, IObserver
             GameObject _tileReference = currentBoard.GetObjectOnMatrix(_positionsBoard[_index]);
             tempPL.transform.position = _tileReference.transform.position;
             tempPL.GetComponent<Player>().ChangePlayerState(1);
+
             if (_tileReference.transform.childCount > 0)
             {
                 _tileReference.transform.GetChild(0).GetComponent<Tile>().occupation = tempPL;
@@ -47,11 +49,12 @@ public class BattleHandler : MonoBehaviour, IObserver
                 _tileReference.GetComponent<Tile>().occupation = tempPL;
             }
             activePlayers.Add(tempPL);
-
+            tempPL.GetComponent<Player>().Attach(this);
             _index++;
         }
+        activePlayers[0].GetComponent<Player>().ChangePlayerState(0);
+        playerController.TurnControll(activePlayers);
 
-        
 
     }
 
@@ -85,14 +88,18 @@ public class BattleHandler : MonoBehaviour, IObserver
 
     public void ExecuteUpdate(ISubject s, Message message)
     {
-        if (message.Equals(Message.StartBatle))
+        if (message.Equals(Message.StartBattle))
         {
-            StartBattle(s);
+            foreach(GameObject player in activePlayers)
+            {
+                if (!player.GetComponent<Player>().Equals(s))
+                {
+                    battleController.StartBattle((Player)s, player.GetComponent<Player>());
+                }
+            }
+           
         }
     }
 
-    private void StartBattle(ISubject s)
-    {
-        Debug.Log(s.ToString());
-    }
+
 }

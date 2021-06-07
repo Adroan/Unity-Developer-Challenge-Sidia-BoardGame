@@ -117,27 +117,28 @@ public class HexagonBoardGenerator : Board
 
     public override bool VerifyBattle(Vector2 _currentPosition)
     {
-        bool containsPlayer = false;
-        for(int x = -1; x <=1; x++)
+        foreach(KeyValuePair<GameObject,Vector2> _tile in board_Dt)
         {
-            for(int y = -1; y<=1; y++)
+            Vector2 tilePosMatrix = GetTilePositionOnMatrix(_tile.Key.transform.parent.gameObject.name.Contains("hexagon") ? _tile.Key.transform.parent.gameObject : _tile.Key);
+
+
+            if (tilePosMatrix != _currentPosition
+                && (tilePosMatrix.x - _currentPosition.x) <= 1
+                && (tilePosMatrix.x - _currentPosition.x) >= -1
+                && (tilePosMatrix.y - _currentPosition.y) <= 1
+                && (tilePosMatrix.y - _currentPosition.y) >= -1
+                && isValidDiagonal(_currentPosition.y % 2, tilePosMatrix.x - _currentPosition.x, tilePosMatrix.y - _currentPosition.y))
             {
-                //Debug.Log("Verificar diagonal = " + isValidDiagonal(_currentPosition.y % 2, x, y) + " x = " + x + " y = " + y);
-                
-                if ( x!=0 && y!=0)
+
+                if (_tile.Key.transform.GetChild(0).gameObject.GetComponent<Tile>().ContainsPlayer())
                 {
-                    Debug.Log("Player =" + VerifyPlayer(_currentPosition, x, y));
-                    containsPlayer = VerifyPlayer(_currentPosition, x, y);
+                    return true;
                 }
 
-                
             }
         }
-        return containsPlayer;
+        return false;
     }
 
-    private bool VerifyPlayer(Vector2 _currentPosition, int x, int y)
-    {
-        return GetObjectOnMatrix(new Vector2(_currentPosition.x + x, _currentPosition.y + y)).transform.GetChild(0).GetComponent<Tile>().ContainsPlayer();
-    }
+
 }

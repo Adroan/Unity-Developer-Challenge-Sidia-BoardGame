@@ -46,4 +46,9 @@ public class PlayerController : MonoBehaviour, IObserver
             }
         }
     }
+
+    public List<GameObject> GetActivePlayers()
+    {
+        return activePlayers;
+    }
 }

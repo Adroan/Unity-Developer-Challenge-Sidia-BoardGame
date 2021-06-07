@@ -6,17 +6,24 @@ public class SquareBoardGenerator : Board
 {
     public override bool IsValidMove(GameObject _tile, Vector2 _currentPosition)
     {
-        Vector2 tilePosMatrix = GetTilePositionOnMatrix(_tile);
+        Vector2 tilePosMatrix = GetTilePositionOnMatrix(_tile.transform.parent.gameObject.name.Contains("square") ? _tile.transform.parent.gameObject : _tile);
         Debug.Log("CurrentPos = " + _currentPosition.ToString() + " NextPos = " + tilePosMatrix.ToString());
         if (tilePosMatrix != _currentPosition
             && (tilePosMatrix.x - _currentPosition.x) <= 1
             && (tilePosMatrix.x - _currentPosition.x) >= -1
             && (tilePosMatrix.y - _currentPosition.y) <= 1
-            && (tilePosMatrix.y - _currentPosition.y) >= -1
-            && (!_tile.GetComponent<Tile>().ContainsPlayer()))
+            && (tilePosMatrix.y - _currentPosition.y) >= -1)
         {
+            if ((!_tile.GetComponent<Tile>().ContainsPlayer()))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
 
-            return true;
+            
         }
 
         return false;
@@ -24,28 +31,28 @@ public class SquareBoardGenerator : Board
 
     public override bool VerifyBattle(Vector2 _currentPosition)
     {
-        bool containsPlayer = false;
-        for (int x = -1; x <= 1; x++)
+        foreach (KeyValuePair<GameObject, Vector2> _tile in board_Dt)
         {
-            for (int y = -1; y <= 1; y++)
+            Vector2 tilePosMatrix = GetTilePositionOnMatrix(_tile.Key.transform.parent.gameObject.name.Contains("square") ? _tile.Key.transform.parent.gameObject : _tile.Key);
+
+
+            if (tilePosMatrix != _currentPosition
+                && (tilePosMatrix.x - _currentPosition.x) <= 1
+                && (tilePosMatrix.x - _currentPosition.x) >= -1
+                && (tilePosMatrix.y - _currentPosition.y) <= 1
+                && (tilePosMatrix.y - _currentPosition.y) >= -1)
             {
 
-
-                if ( x != 0 && y != 0)
+                if (_tile.Key.transform.GetChild(0).gameObject.GetComponent<Tile>().ContainsPlayer())
                 {
-
-                    containsPlayer = VerifyPlayer(_currentPosition, x, y);
+                    return true;
                 }
-
 
             }
         }
-        return containsPlayer;
+        return false;
     }
-    private bool VerifyPlayer(Vector2 _currentPosition, int x, int y)
-    {
-        return GetObjectOnMatrix(new Vector2(_currentPosition.x + x, _currentPosition.y + y)).GetComponent<Tile>().ContainsPlayer();
-    }
+
 
     protected override void RepositionObjects(int x, int z, GameObject _tile)
     {
@@ -54,7 +61,7 @@ public class SquareBoardGenerator : Board
         _tile.transform.position = new Vector3(x * xOffset, 0, z * zOffset);
         if ((x + z) % 2 == 0)
         {
-            _tile.GetComponent<Renderer>().material = materials[1];
+            _tile.transform.GetChild(0).GetComponent<Renderer>().material = materials[1];
         }
     }
 
@@ -64,9 +71,9 @@ public class SquareBoardGenerator : Board
         {
             foreach (KeyValuePair<GameObject, Vector2> pair in board_Dt)
             {
-                if (IsValidMove(pair.Key, currentBoardPosition))
+                if (IsValidMove(pair.Key.transform.GetChild(0).gameObject, currentBoardPosition))
                 {
-                    pair.Key.GetComponent<Renderer>().material = materials[2];
+                    pair.Key.transform.GetChild(0).GetComponent<Renderer>().material = materials[2];
                 }
             }
             isHighlight = true;
@@ -79,7 +86,11 @@ public class SquareBoardGenerator : Board
         {
             if ((pair.Value.x + pair.Value.y) % 2 == 0)
             {
-                pair.Key.GetComponent<Renderer>().material = materials[1];
+                pair.Key.transform.GetChild(0).GetComponent<Renderer>().material = materials[1];
+            }
+            else
+            {
+                pair.Key.transform.GetChild(0).GetComponent<Renderer>().material = materials[0];
             }
         }
         isHighlight = false;

@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Board
   - Coin
+  - DATA
   layers:
   - Default
   - TransparentFX

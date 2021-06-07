@@ -5,7 +5,10 @@ using UnityEngine;
 public enum Message
 {
     EndTurn,
-    StartBatle
+    StartBattle,
+    Damage,
+    Move,
+    Dead
 }
 
 public interface IObserver 

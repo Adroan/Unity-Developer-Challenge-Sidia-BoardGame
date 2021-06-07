@@ -18,6 +18,8 @@ public abstract class Board : MonoBehaviour
     public int mapHeight = 16;
     protected bool isHighlight;
 
+    private string typeOfTile;
+
     //****Colectibles****
     public GameObject[] collectableItems;
 
@@ -27,11 +29,29 @@ public abstract class Board : MonoBehaviour
 
     private void Awake()
     {
+       
+
+
         if (instance == null)
         {
+            mapHeight = PlayerPrefs.GetInt("mapSize");
+            mapWigth = PlayerPrefs.GetInt("mapSize");
+            typeOfTile = PlayerPrefs.GetString("typeOfTile");
+            if (typeOfTile.Equals("Square"))
+            {
+                Destroy(gameObject.GetComponent<HexagonBoardGenerator>());
+
+                gameObject.GetComponent<SquareBoardGenerator>().enabled = true;
+            }
+            else
+            {
+                Destroy(gameObject.GetComponent<SquareBoardGenerator>());
+
+                gameObject.GetComponent<HexagonBoardGenerator>().enabled = true;
+            }
             instance = this;
             board_Dt = new Dictionary<GameObject, Vector2>();
-            GenerateMap();
+            
         }
         else if (instance != this)
         {
@@ -44,6 +64,7 @@ public abstract class Board : MonoBehaviour
     internal abstract void ResetHighlightValidMoves();
     private void Start()
     {
+        GenerateMap();
         StartCoroutine(PopulateBoard());
     }
 
@@ -148,17 +169,8 @@ public abstract class Board : MonoBehaviour
     public void changeTile(GameObject _previusTile, GameObject _nextTile, GameObject player)
     {
 
-        
-        if (_previusTile.name.Contains("hexagon"))
-        {
             _previusTile.transform.GetChild(0).GetComponent<Tile>().occupation = null;
             _nextTile.transform.GetChild(0).GetComponent<Tile>().occupation = player;
-        }
-        else
-        {
-            _nextTile.GetComponent<Tile>().occupation = player;
-            _previusTile.GetComponent<Tile>().occupation = null;
-        }
     }
 
 
