@@ -35,6 +35,4 @@ public class UIManager : MonoBehaviour,IObserver
         }
     }
 
-    // Update is called once per frame
-
 }

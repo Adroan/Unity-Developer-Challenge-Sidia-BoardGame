@@ -32,7 +32,6 @@ public class GameOverManager : MonoBehaviour, IObserver
         {
             player.GetComponent<Character>().Attach(this);
         }
-
     }
 
     public void BackToMainMenu()

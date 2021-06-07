@@ -29,7 +29,6 @@ public class CameraController : MonoBehaviour, IObserver
 
     void Start()
     {
-        
         StartCoroutine(catchPlayers());
     }
     IEnumerator catchPlayers()
@@ -42,11 +41,7 @@ public class CameraController : MonoBehaviour, IObserver
             if (player.GetComponent<Player>().GetPlayerState() == 0)
             {
                 transform.position = new Vector3(player.transform.position.x, transform.position.y, player.transform.position.z);
-            }
-           
+            }  
         }
-
     }
-
-
 }

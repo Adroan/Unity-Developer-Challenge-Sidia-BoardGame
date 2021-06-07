@@ -2,7 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+/// <summary>
+/// Base class for the game board 
+/// </summary>
 public abstract class Board : MonoBehaviour
 {
     //****Singleton
@@ -29,8 +31,6 @@ public abstract class Board : MonoBehaviour
 
     private void Awake()
     {
-       
-
 
         if (instance == null)
         {
@@ -55,19 +55,27 @@ public abstract class Board : MonoBehaviour
         }
         else if (instance != this)
         {
-            Debug.Log("Instance already exists, destroying object!");
             Destroy(this);
         }
     }
-
+    /// <summary>
+    /// Highlights the possible moves given a current position
+    /// </summary>
+    /// <param name="currentBoardPosition"></param>
     internal abstract void HighlightValidMoves(Vector2 currentBoardPosition);
+
+    /// <summary>
+    /// HighLights reset
+    /// </summary>
     internal abstract void ResetHighlightValidMoves();
     private void Start()
     {
         GenerateMap();
         StartCoroutine(PopulateBoard());
     }
-
+    /// <summary>
+    /// Add collectable items to the board
+    /// </summary>
     private IEnumerator PopulateBoard()
     {
         yield return new WaitForSeconds(0.5f);
@@ -111,27 +119,40 @@ public abstract class Board : MonoBehaviour
 
     private void GenerateMap()
     {
-
         for (int x = 0; x < mapWigth; x++)
         {
             for (int z = 0; z < mapHeight; z++)
             {
                 GameObject tempOb = Instantiate(tilePrefab, transform);
-                tempOb.name = tilePrefab.name + x +""+ z;
+                tempOb.name = tilePrefab.name + x + "" + z;
                 RepositionObjects(x, z, tempOb);
                 board_Dt.Add(tempOb, new Vector2(x, z));
             }
         }
 
-
-
     }
 
-
+    /// <summary>
+    /// reposition the tile to better fit the shape
+    /// </summary>
+    /// <param name="x"></param>
+    /// <param name="z"></param>
+    /// <param name="_tile"></param>
     protected abstract void RepositionObjects(int x, int z, GameObject _tile);
 
+    /// <summary>
+    /// Check if the movement is valid
+    /// </summary>
+    /// <param name="_tile"></param>
+    /// <param name="_currentPosition"></param>
+    /// <returns></returns>
     public abstract bool IsValidMove(GameObject _tile, Vector2 _currentPosition);
 
+    /// <summary>
+    /// Check if a battle is possible
+    /// </summary>
+    /// <param name="_currentPosition"></param>
+    /// <returns></returns>
     public abstract bool VerifyBattle(Vector2 _currentPosition);
 
 
@@ -139,7 +160,11 @@ public abstract class Board : MonoBehaviour
     {
         return board_Dt;   
     }
-
+    /// <summary>
+    /// Position of the tile in the matrix
+    /// </summary>
+    /// <param name="_tile"></param>
+    /// <returns > Relative position - type = "Vector2" - of the tile in the matrix </returns>
     public Vector2 GetTilePositionOnMatrix(GameObject _tile)
     {
 
@@ -153,7 +178,11 @@ public abstract class Board : MonoBehaviour
         }
         return Vector2.negativeInfinity;
     }
-
+    /// <summary>
+    /// GameObjet of the tile in the matrix
+    /// </summary>
+    /// <param name="_pos"></param>
+    /// <returns>GameObject tile</returns>
     public GameObject GetObjectOnMatrix(Vector2 _pos)
     {
         foreach (KeyValuePair<GameObject, Vector2> pair in board_Dt)
@@ -168,7 +197,6 @@ public abstract class Board : MonoBehaviour
 
     public void changeTile(GameObject _previusTile, GameObject _nextTile, GameObject player)
     {
-
             _previusTile.transform.GetChild(0).GetComponent<Tile>().occupation = null;
             _nextTile.transform.GetChild(0).GetComponent<Tile>().occupation = player;
     }

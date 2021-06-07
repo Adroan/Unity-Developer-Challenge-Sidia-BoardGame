@@ -21,9 +21,7 @@ public class BattleController : MonoBehaviour
 
         playerTurnRolls = DicesRoll(playerTurn);
         playerEnemyRolls = DicesRoll(playerEnemy);
-            
-        
-        
+
         Confront();
     }
 
@@ -31,17 +29,18 @@ public class BattleController : MonoBehaviour
     {
         if (VerifyWinnerPlayer())
         {
-            Debug.Log("Palyer 2 ganhou e deu " + players[1].character.damage + " no player 1");
             players[0].character.TakeDamage(players[1].character.damage);
         }
         else
         {
-            Debug.Log("Palyer 1 ganhou e deu " + players[0].character.damage + " no player 2");
             players[1].character.TakeDamage(players[0].character.damage);
         }
        
     }
-
+    /// <summary>
+    /// Check the winner of the duel by comparing each player's dice
+    /// </summary>
+    /// <returns>Player 2 win = true, Player 1 win  = false</returns>
     private bool VerifyWinnerPlayer()
     {
         int player1Wins = 0;
@@ -95,10 +94,13 @@ public class BattleController : MonoBehaviour
                 }
             }
         }
-        //Debug.Log("Player 1 rolls = " +verifyRolls(playerTurnRolls) + " Player 2 rolls " + verifyRolls(playerEnemyRolls));
         return player1Wins < player2Wins;
     }
-
+    /// <summary>
+    /// Roll each player's dice
+    /// </summary>
+    /// <param name="player"></param>
+    /// <returns>rolls results list - List<int> </int></returns>
     private List<int> DicesRoll(Player player)
     {
         List<int> rolls = new List<int>();

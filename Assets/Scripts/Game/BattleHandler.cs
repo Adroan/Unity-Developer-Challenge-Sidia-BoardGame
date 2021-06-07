@@ -19,17 +19,15 @@ public class BattleHandler : MonoBehaviour, IObserver
     {
         currentBoard = GameObject.Find("Board") != null ? GameObject.Find("Board").GetComponent<Board>() : throw new System.Exception("Board not found");
         activePlayers = new List<GameObject>();
-         InitPlayers();
-
+        InitPlayers();
     }
 
-
+    /// <summary>
+    /// initialize players on the board
+    /// </summary>
     private void InitPlayers()
     {
-
         Vector2[] _positionsBoard = GenerateSpawnposition(playersPrefab.Length);
-
-
         int _index = 0;
         foreach (GameObject player in playersPrefab)
         {
@@ -54,11 +52,13 @@ public class BattleHandler : MonoBehaviour, IObserver
         }
         activePlayers[0].GetComponent<Player>().ChangePlayerState(0);
         playerController.TurnControll(activePlayers);
-
-
     }
 
-
+    /// <summary>
+    /// generates different spawn points
+    /// </summary>
+    /// <param name="_length"></param>
+    /// <returns>Position relative - Vector 2 - to the tile in the matrix</returns>
     private Vector2[] GenerateSpawnposition(int _length)
     {
         Vector2[] positions = new Vector2[_length];
