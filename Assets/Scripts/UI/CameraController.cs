@@ -24,7 +24,7 @@ public class CameraController : MonoBehaviour, IObserver
 
     private bool MoveCamera(Vector3 nextPos)
     {
-        return nextPos !=( transform.position = Vector3.MoveTowards(transform.position, nextPos, 5f * Time.deltaTime));
+        return nextPos !=( transform.position = Vector3.MoveTowards(transform.position, nextPos, 2f * Time.deltaTime));
     }
 
     void Start()

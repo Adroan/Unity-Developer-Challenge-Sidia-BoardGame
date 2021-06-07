@@ -15,7 +15,7 @@ public class GameOverManager : MonoBehaviour, IObserver
         {
             transform.localScale = Vector3.one;
             Player loser = (Player)s;
-            playerWinner.text = loser.gameObject.name == "Player0" ? "Player 1" : "Player 0";
+            playerWinner.text = loser.gameObject.name == "Player0" ? "Player 2" : "Player 1";
         }
     }
 
@@ -30,13 +30,18 @@ public class GameOverManager : MonoBehaviour, IObserver
         activePlayers = playerController.GetActivePlayers();
         foreach (GameObject player in activePlayers)
         {
-            player.GetComponent<Character>().Attach(this);
+            player.GetComponent<Player>().Attach(this);
         }
     }
 
     public void BackToMainMenu()
     {
         SceneManager.LoadScene("MainMenuScene");
+    }
+
+    public void Restart()
+    {
+        SceneManager.LoadScene("GameScene");
     }
 
 }

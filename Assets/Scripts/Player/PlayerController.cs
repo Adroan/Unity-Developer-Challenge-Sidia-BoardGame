@@ -32,7 +32,7 @@ public class PlayerController : MonoBehaviour, IObserver
         {
             Player temp = player.GetComponent<Player>();
 
-            StartCoroutine(temp.EndHighLight());
+
             if (temp.GetPlayerState() == 0)
             {
                 temp.character.ResetStats();
@@ -42,7 +42,7 @@ public class PlayerController : MonoBehaviour, IObserver
             else if(temp.GetPlayerState() == 1)
             {
                 temp.ChangePlayerState(0);
-                StartCoroutine(temp.StartHighLight());
+
             }
         }
     }

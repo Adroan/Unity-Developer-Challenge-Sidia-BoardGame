@@ -96,6 +96,9 @@ public class Player : MonoBehaviour, ISubject
         }
         if (character.moves == 0)
         {
+            StopCoroutine(StartHighLight());
+            StartCoroutine(EndHighLight());
+
             Notify(Message.EndTurn);
         }
         isMoving = false;

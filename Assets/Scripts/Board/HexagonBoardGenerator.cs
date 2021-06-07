@@ -107,12 +107,12 @@ public class HexagonBoardGenerator : Board
 
     internal override void ResetHighlightValidMoves()
     {
-
+        isHighlight = false;
         foreach (KeyValuePair<GameObject, Vector2> pair in board_Dt)
         {
             PaintHex(pair.Value.x, pair.Value.y, pair.Key);
         }
-        isHighlight = false;
+        
     }
 
     public override bool VerifyBattle(Vector2 _currentPosition)
