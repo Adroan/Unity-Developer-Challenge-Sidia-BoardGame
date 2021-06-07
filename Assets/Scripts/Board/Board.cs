@@ -1,4 +1,4 @@
-﻿using System;
+﻿
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,13 +9,17 @@ public abstract class Board : MonoBehaviour
     public static Board instance;
 
     //****Node Controll Field
-    private Dictionary<GameObject, Vector2> board_Dt;
+    protected Dictionary<GameObject, Vector2> board_Dt;
 
     //****Position && Prefabs Field***
     public GameObject tilePrefab;
     public Material[] materials;
     public int mapWigth = 16;
     public int mapHeight = 16;
+    protected bool isHighlight;
+
+    //****Colectibles****
+    public GameObject[] collectableItems;
 
 
     public float xOffset { get; protected set;}
@@ -36,7 +40,53 @@ public abstract class Board : MonoBehaviour
         }
     }
 
+    internal abstract void HighlightValidMoves(Vector2 currentBoardPosition);
+    internal abstract void ResetHighlightValidMoves();
+    private void Start()
+    {
+        StartCoroutine(PopulateBoard());
+    }
 
+    private IEnumerator PopulateBoard()
+    {
+        yield return new WaitForSeconds(0.5f);
+        foreach(var _tile in board_Dt)
+        {
+            if (_tile.Key.transform.childCount > 0)
+            {
+                if (!_tile.Key.transform.GetChild(0).GetComponent<Tile>().IsFull())
+                {
+                    _tile.Key.transform.GetChild(0).GetComponent<Tile>().occupation = CreateCoin(_tile.Key, Random.Range(0, 101));
+                }
+            }
+            else
+            {
+                if (!_tile.Key.GetComponent<Tile>().IsFull())
+                {
+                    _tile.Key.GetComponent<Tile>().occupation = CreateCoin(_tile.Key, Random.Range(0, 101));
+                }
+            }
+        }
+    }
+
+    
+
+    private GameObject CreateCoin(GameObject _tile, int randNumber)
+    {
+        if (randNumber >= 90)
+        {
+            return Instantiate(collectableItems[0],_tile.transform.position,Quaternion.identity,_tile.transform);
+        }else if(randNumber>=70 && randNumber < 90)
+        {
+            return Instantiate(collectableItems[1], _tile.transform.position, Quaternion.identity, _tile.transform);
+        }else if(randNumber>=40 && randNumber < 70)
+        {
+            return Instantiate(collectableItems[2], _tile.transform.position, Quaternion.identity, _tile.transform);
+        }else 
+        {
+            return Instantiate(collectableItems[3], _tile.transform.position, Quaternion.identity, _tile.transform);
+        }
+    }
 
     private void GenerateMap()
     {
@@ -60,6 +110,8 @@ public abstract class Board : MonoBehaviour
     protected abstract void RepositionObjects(int x, int z, GameObject _tile);
 
     public abstract bool IsValidMove(GameObject _tile, Vector2 _currentPosition);
+
+    public abstract bool VerifyBattle(Vector2 _currentPosition);
 
 
     public Dictionary<GameObject, Vector2> GetBoardMatrix()
@@ -93,10 +145,20 @@ public abstract class Board : MonoBehaviour
         return null;
     }
 
-    public void changeTile(GameObject _previusTile, GameObject _nextTile)
+    public void changeTile(GameObject _previusTile, GameObject _nextTile, GameObject player)
     {
-        _nextTile.GetComponent<Tile>().occupation = _previusTile.GetComponent<Tile>().occupation;
-        _previusTile.GetComponent<Tile>().occupation = null;
+
+        
+        if (_previusTile.name.Contains("hexagon"))
+        {
+            _previusTile.transform.GetChild(0).GetComponent<Tile>().occupation = null;
+            _nextTile.transform.GetChild(0).GetComponent<Tile>().occupation = player;
+        }
+        else
+        {
+            _nextTile.GetComponent<Tile>().occupation = player;
+            _previusTile.GetComponent<Tile>().occupation = null;
+        }
     }
 
 

@@ -6,9 +6,14 @@ public class Tile : MonoBehaviour
 {
     public GameObject occupation { get; set; }
 
-    public bool isFull()
+    public bool IsFull()
     {
 
         return occupation != null;
+    }
+
+    public bool ContainsPlayer()
+    {
+        return occupation != null? occupation.tag == "Player": false;
     }
 }

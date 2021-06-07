@@ -7,28 +7,37 @@ public class HexagonBoardGenerator : Board
 {
     public override bool IsValidMove(GameObject _tile, Vector2 _currentPosition)
     {
-        Vector2 tilePosMatrix = GetTilePositionOnMatrix(_tile);
-        Debug.Log("CurrentPos = " + _currentPosition.ToString() + " NextPos = " + tilePosMatrix.ToString());
-        Debug.Log("tilePosMatrix.x - _currentPosition.x = " + (tilePosMatrix.x - _currentPosition.x));
-        Debug.Log("tilePosMatrix.y - _currentPosition.y = " + (tilePosMatrix.y - _currentPosition.y));
 
-            if (tilePosMatrix != _currentPosition
-                && (tilePosMatrix.x - _currentPosition.x) <= 1
-                && (tilePosMatrix.x - _currentPosition.x) >= -1
-                && (tilePosMatrix.y - _currentPosition.y) <= 1
-                && (tilePosMatrix.y - _currentPosition.y) >= -1
-                && (!_tile.GetComponent<Tile>().isFull())
-                && isValidDiagonalMove(_currentPosition.y % 2, tilePosMatrix.x - _currentPosition.x, tilePosMatrix.y - _currentPosition.y))
+        Vector2 tilePosMatrix = GetTilePositionOnMatrix(_tile.transform.parent.gameObject.name.Contains("hexagon") ?_tile.transform.parent.gameObject : _tile );
+
+        
+        if (tilePosMatrix != _currentPosition
+            && (tilePosMatrix.x - _currentPosition.x) <= 1
+            && (tilePosMatrix.x - _currentPosition.x) >= -1
+            && (tilePosMatrix.y - _currentPosition.y) <= 1
+            && (tilePosMatrix.y - _currentPosition.y) >= -1
+            && isValidDiagonal(_currentPosition.y % 2, tilePosMatrix.x - _currentPosition.x, tilePosMatrix.y - _currentPosition.y))
             {
 
-                    return true;
+                if (!(_tile.GetComponent<Tile>().ContainsPlayer()))
+                {
+
+                return true;
+                
+                }
+                else
+                {
+
+                return false;
+                }
+
  
-            }
- 
+        }
+
 
         return false;
     }
-    private bool isValidDiagonalMove(float _par, float _difX, float _difY)
+    private bool isValidDiagonal(float _par, float _difX, float _difY)
     {
         if (_par == 0)
         {
@@ -62,14 +71,73 @@ public class HexagonBoardGenerator : Board
             _tile.transform.position = new Vector3(x * xOffset + xOffset / 2, 0, z * zOffset);
 
         }
+        PaintHex(x, z, _tile);
+    }
+
+    private void PaintHex(float x, float z, GameObject _tile)
+    {
         if (x % 2 == 0)
         {
-            _tile.GetComponent<Renderer>().material = materials[1];
-        }
-        if (z % 2 == 0)
+            _tile.transform.GetChild(0).GetComponent<Renderer>().material = materials[1];
+        }else if (z % 2 == 0)
         {
-            _tile.GetComponent<Renderer>().material = materials[2];
+            _tile.transform.GetChild(0).GetComponent<Renderer>().material = materials[2];
+        }
+        else
+        {
+            _tile.transform.GetChild(0).GetComponent<Renderer>().material = materials[0];
         }
     }
 
+    internal override void HighlightValidMoves(Vector2 currentBoardPosition)
+    {
+        if (!isHighlight)
+        {
+
+            foreach (KeyValuePair<GameObject, Vector2> pair in board_Dt)
+            {
+                if (IsValidMove(pair.Key.transform.GetChild(0).gameObject, currentBoardPosition))
+                {
+                    pair.Key.transform.GetChild(0).GetComponent<Renderer>().material = materials[3];
+                }
+            }
+            isHighlight = true;
+        }
+    }
+
+    internal override void ResetHighlightValidMoves()
+    {
+
+        foreach (KeyValuePair<GameObject, Vector2> pair in board_Dt)
+        {
+            PaintHex(pair.Value.x, pair.Value.y, pair.Key);
+        }
+        isHighlight = false;
+    }
+
+    public override bool VerifyBattle(Vector2 _currentPosition)
+    {
+        bool containsPlayer = false;
+        for(int x = -1; x <=1; x++)
+        {
+            for(int y = -1; y<=1; y++)
+            {
+                //Debug.Log("Verificar diagonal = " + isValidDiagonal(_currentPosition.y % 2, x, y) + " x = " + x + " y = " + y);
+                
+                if ( x!=0 && y!=0)
+                {
+                    Debug.Log("Player =" + VerifyPlayer(_currentPosition, x, y));
+                    containsPlayer = VerifyPlayer(_currentPosition, x, y);
+                }
+
+                
+            }
+        }
+        return containsPlayer;
+    }
+
+    private bool VerifyPlayer(Vector2 _currentPosition, int x, int y)
+    {
+        return GetObjectOnMatrix(new Vector2(_currentPosition.x + x, _currentPosition.y + y)).transform.GetChild(0).GetComponent<Tile>().ContainsPlayer();
+    }
 }

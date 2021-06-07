@@ -10,9 +10,11 @@ GameObject:
   m_Component:
   - component: {fileID: 8503172298501515218}
   - component: {fileID: 1539053540}
+  - component: {fileID: 6510675253489265881}
+  - component: {fileID: 194850935401613759}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -46,7 +48,39 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentBoard: {fileID: 0}
   currentBoardPosition: {x: 0, y: 0}
+  currentTile: {fileID: 0}
+  character: {fileID: 6510675253489265881}
   remainingMoves: 0
+  state: 0
+--- !u!114 &6510675253489265881
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5539441385601917925}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 11d6e65567365c7419895c44b4030375, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  DAMAGE_BASE: 10
+  MOVES_BASE: 3
+  DICES_BASE: 3
+--- !u!136 &194850935401613759
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5539441385601917925}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 0.35
+  m_Height: 1.54
+  m_Direction: 1
+  m_Center: {x: 0, y: 0.69, z: 0}
 --- !u!1001 &8639105967532486815
 PrefabInstance:
   m_ObjectHideFlags: 0
